@@ -1,0 +1,82 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+#define LINHAS 20
+#define COLUNAS 10
+#define NAVIOS 10
+
+// Estrutura para representar o tabuleiro
+typedef struct {
+    int navios[LINHAS][COLUNAS];
+} Tabuleiro;
+
+// Função para inicializar o tabuleiro
+void inicializarTabuleiro(Tabuleiro* tabuleiro) {
+    for (int i = 0; i < LINHAS; i++) {
+        for (int j = 0; j < COLUNAS; j++) {
+            tabuleiro->navios[i][j] = 0;
+        }
+    }
+}
+
+// Função para imprimir o tabuleiro
+void imprimirTabuleiro(Tabuleiro* tabuleiro) {
+    printf("  ");
+    for (int i = 0; i < COLUNAS; i++) {
+        printf("%d ", i);
+    }
+    printf("\n");
+    for (int i = 0; i < LINHAS; i++) {
+        printf("%d ", i);
+        for (int j = 0; j < COLUNAS; j++) {
+            if (tabuleiro->navios[i][j] == 1) {
+                printf("~ "); // Navio não visível
+            } else if (tabuleiro->navios[i][j] == 2) {
+                printf("X "); // Tiro acertou o navio
+            } else if (tabuleiro->navios[i][j] == 3) {
+                printf("O "); // Tiro errou o navio
+            } else {
+                printf("~ "); // Água
+            }
+        }
+        printf("\n");
+    }
+}
+
+// Função para colocar navios aleatórios no tabuleiro
+void colocarNavios(Tabuleiro* tabuleiro) {
+    srand(time(NULL));
+    for (int i = 0; i < NAVIOS; i++) {
+        int linha = rand() % LINHAS;
+        int coluna = rand() % COLUNAS;
+        tabuleiro->navios[linha][coluna] = 1;
+    }
+}
+
+// Função para jogar
+void jogar(Tabuleiro* tabuleiro) {
+    int linha, coluna;
+    printf("Digite a linha e a coluna para atirar (ex: 0 0): ");
+    scanf("%d %d", &linha, &coluna);
+    if (tabuleiro->navios[linha][coluna] == 1) {
+        tabuleiro->navios[linha][coluna] = 2;
+        printf("Acertou o navio!\n");
+    } else if (tabuleiro->navios[linha][coluna] == 0) {
+        tabuleiro->navios[linha][coluna] = 3;
+        printf("Errou o navio!\n");
+    } else {
+        printf("Você já atirou aqui!\n");
+    }
+}
+
+int main() {
+    Tabuleiro tabuleiro;
+    inicializarTabuleiro(&tabuleiro);
+    colocarNavios(&tabuleiro);
+    while (1) {
+        imprimirTabuleiro(&tabuleiro);
+        jogar(&tabuleiro);
+    }
+    return 0;
+}
